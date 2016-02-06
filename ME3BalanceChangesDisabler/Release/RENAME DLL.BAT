@@ -1,0 +1,1 @@
+ren *.dll *.asi
