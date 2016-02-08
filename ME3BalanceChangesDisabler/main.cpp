@@ -1,6 +1,6 @@
 #include <windows.h>
 
-BYTE pattern[] = { 0x4D, 0x45, 0x33, 0x5F, 0x42, 0x49, 0x4E, 0x49, 0x5F, 0x56, 0x45, 0x52, 0x53, 0x49, 0x4F, 0x4E };
+BYTE pattern[] = { 0x4D, 0x45, 0x33, 0x5F, 0x25, 0x73 }; // ME3_%s
 
 bool DataCompare(const BYTE* OpCodes, const BYTE* Mask, const char* StrMask)  
 {  
@@ -31,17 +31,17 @@ DWORD FindPattern(DWORD StartAddress, DWORD CodeLen, BYTE* Mask, char* StrMask, 
 
 DWORD WINAPI Start(LPVOID lpParam)
 {
-		DWORD ME3biniversionstringloc, dwProtect;
-		ME3biniversionstringloc = FindPattern(0x401000, 0x1500000, pattern, "xxxxxxxxxxxxxxxx", 0);
-		if(ME3biniversionstringloc)
+		DWORD stringloc, dwProtect;
+		stringloc = FindPattern(0x401000, 0x1500000, pattern, "xxxxxx", 0);
+		if(stringloc)
 		{
-			VirtualProtect( (void*)ME3biniversionstringloc, 0x3, PAGE_READWRITE, &dwProtect );
-			BYTE* p = (BYTE*)ME3biniversionstringloc;
-			// turns it into "XXX_BINI_VERSION"
+			VirtualProtect( (void*)stringloc, 0x3, PAGE_READWRITE, &dwProtect );
+			BYTE* p = (BYTE*)stringloc;
+			// turns it into "XXX_%s"
 			*p++ = 'X';
 			*p++ = 'X';
 			*p = 'X';
-			VirtualProtect( (void*)ME3biniversionstringloc, 0x3, dwProtect, &dwProtect );
+			VirtualProtect( (void*)stringloc, 0x3, dwProtect, &dwProtect );
 		}
 		return 0;
 }
