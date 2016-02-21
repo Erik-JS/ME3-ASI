@@ -4,9 +4,9 @@ This is a collection of various plugins (DLL files renamed to *.asi) which provi
 
 **An ASI Plugin requires the use of a separate ASI Loader in order to be used / Intended for use with ME3 Autopatcher available at https://github.com/Erik-JS/masseffect-binkw32**
 
-**How to use a plugin:** simply drop ME3xxx.asi in 'Mass Effect 3\Binaries\Win32'. You're not limited in how many plugins you can use at a time.
+**How to use a plugin:** simply drop ME3xxx.asi in 'Mass Effect 3\Binaries\Win32', or 'Mass Effect 3\Binaries\Win32\ASI'. You're not limited in how many plugins you can use at a time.
 
-**Disabling a plugin:** delete the respective .asi file. Alternatively, you can instead move it to another folder, or rename it so it doesn't end with ".asi".
+**Disabling a plugin:** delete the respective .asi file. Alternatively, you can instead move it to another folder, or rename it so it doesn't end with ".asi" (or, if you're using 'ASI' folder, rename it to disable all plugins).
 
 All plugins available here:
 - are intended for use with Mass Effect 3 1.5 only.
