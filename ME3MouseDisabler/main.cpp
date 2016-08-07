@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 
-DWORD IATloc;
+DWORD IATloc = 0;
 
 BOOL __stdcall FakeGetCursorPos(LPPOINT lpPoint)
 {
@@ -25,14 +25,19 @@ DWORD WINAPI Start(LPVOID lpParam)
 		IATloc = membase + sechdr[i].VirtualAddress;
 		break;
 	}
+	if(!IATloc)
+		return 0;
 	HMODULE hUser32 = GetModuleHandle("User32.dll");
-	int GetCursorPosLocation = (int)GetProcAddress(hUser32,"GetCursorPos");
+	int OriginalGetCursorPos = (int)GetProcAddress(hUser32,"GetCursorPos");
 	int *p = (int*)IATloc;
 	for(int i = 0; i < 0x200000; i++)
 	{
-		if(p[i] != GetCursorPosLocation)
+		if(p[i] != OriginalGetCursorPos)
 			continue;
+		DWORD originalProtection;
+		VirtualProtect(&p[i], 4, PAGE_EXECUTE_READWRITE, &originalProtection);
 		p[i] = (int)FakeGetCursorPos;
+		VirtualProtect(&p[i], 4, originalProtection, NULL);
 		break;
 	}
 	return 0;
