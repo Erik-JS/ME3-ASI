@@ -5,3 +5,4 @@
 *.exp
 *.suo
 getmd5.exe
+!ME3BalanceChangesReplacer/zdll.lib

@@ -12,11 +12,15 @@ All plugins available here:
 - are intended for use with Mass Effect 3 1.5 only.
 - were made under Visual Studio 2012 Update 4. They require the following VC++ runtimes: http://www.microsoft.com/en-us/download/details.aspx?id=30679
 
+ME3 Balance Changes Replacer requires zlib1.dll (**NOT** included in this repository) - please download it from its own site: http://www.zlib.net. zlib1.dll should be put in 'Mass Effect 3\Binaries\Win32' **OR** the Windows system folder (%WINDIR%\System32).
+
 -----------------------------------------------------------
 
 **Binaries only:** [Dropbox](https://www.dropbox.com/sh/nkcxw14b9dtzpdg/AAAD1Z57FXHuU-DYQd76NwX_a?dl=0)
 
 *ME3Logger was adapted from original code by [Heff](https://github.com/HeffU): http://me3explorer.freeforums.org/me3logger-t1932.html*
+
+*ME3 Balance Changes Replacer uses zlib 1.2.8. zlib is Copyright (C) 1995-2010 Jean-loup Gailly and Mark Adler. http://www.zlib.net*
 
 These plugins are not made or supported by EA or BioWare.<br />
 Mass Effect is a trademark of EA International (Studio and Publishing) Ltd.
