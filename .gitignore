@@ -14,3 +14,4 @@ ipch/
 .vs/
 getmd5.exe
 !ME3BalanceChangesReplacer/zdll.lib
+ME3NotificationInvoker

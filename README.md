@@ -1,7 +1,6 @@
 # ASI Plugins for Mass Effect 3
 
 Author: [Erik JS](https://github.com/Erik-JS)<br />
-For discussions about this repository and other ME3 modding stuff, you may visit [ME3Tweaks Forums](https://me3tweaks.com/forums/).
 
 Get the latest compiled binaries here:<br />
 [![Dropbox](./button_download.png)](https://www.dropbox.com/sh/nkcxw14b9dtzpdg/AAAD1Z57FXHuU-DYQd76NwX_a?dl=0)
@@ -22,7 +21,7 @@ ME3 Balance Changes Replacer requires zlib1.dll (included in this repository) - 
 
 -----------------------------------------------------------
 
-**BUILT UNDER MICROSOFT VISUAL STUDIO EXPRESS 2015 UPDATE 3.**
+**BUILT UNDER MICROSOFT VISUAL STUDIO.**
 
 **DESIGNED FOR WINDOWS 7 OR LATER.**
 
