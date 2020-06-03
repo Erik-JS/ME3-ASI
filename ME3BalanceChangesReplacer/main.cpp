@@ -6,10 +6,13 @@ BYTE pattern[] = { 0x8B, 0x07, 0x8B, 0x4F, 0x04, 0x83, 0xC7, 0x04 };
 BYTE *compressedCoalesced;
 DWORD locReturn;
 
+BYTE patternCompress2[] = { 0x83, 0xEC, 0x38, 0x8B, 0x4C, 0x24, 0x48, 0x8B,
+                            0x54, 0x24, 0x3C, 0x8B, 0x44, 0x24, 0x44, 0x53 };
+
 #define Z_OK 0
 
 typedef int (__cdecl* ZlibCompress2Function)(LPBYTE dest, LPDWORD destLen, LPBYTE source, DWORD sourceLen, DWORD level);
-ZlibCompress2Function compress2 = (ZlibCompress2Function)0x100B530;
+ZlibCompress2Function compress2;
 
 DWORD compressBound(DWORD sourceLen)
 {
@@ -57,13 +60,15 @@ DWORD FindPattern(DWORD StartAddress, DWORD CodeLen, BYTE* Mask, char* StrMask, 
 
 DWORD WINAPI Start(LPVOID lpParam)
 {
-	DWORD codeloc, dwProtect;
+	DWORD codeloc, dwProtect, compress2Loc;
 	codeloc = FindPattern(0x401000, 0x1500000, pattern, "xxxxxxxx", 0);
+	compress2Loc = FindPattern(0x401000, 0x1500000, patternCompress2, "xxxxxxxxxxxxxxxx", 0);
 	// if byte pattern is not found, exit
-	if(!codeloc)
+	if(!codeloc || !compress2Loc)
 	{
 		return 0;
 	}
+	compress2 = (ZlibCompress2Function)compress2Loc;
 	FILE * coalescedFile = fopen("ServerCoalesced.bin", "rb");
 	// if the file is not in the current folder, look for it in ASI subfolder
 	if(!coalescedFile)
