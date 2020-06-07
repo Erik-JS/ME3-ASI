@@ -13,5 +13,5 @@ ipch/
 *.VC.VC.opendb
 .vs/
 getmd5.exe
-!ME3BalanceChangesReplacer/zdll.lib
 ME3NotificationInvoker
+ME3CustomStrings

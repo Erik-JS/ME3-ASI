@@ -17,8 +17,6 @@ This is a collection of various plugins (DLL files renamed to *.asi) which provi
 
 All plugins in this repository are intended for use with Mass Effect 3 **1.5** only.
 
-ME3 Balance Changes Replacer requires zlib1.dll (included in this repository) - zlib1.dll MUST be put in 'Mass Effect 3\Binaries\Win32'.
-
 -----------------------------------------------------------
 
 **BUILT UNDER MICROSOFT VISUAL STUDIO.**
@@ -28,8 +26,6 @@ ME3 Balance Changes Replacer requires zlib1.dll (included in this repository) - 
 -----------------------------------------------------------
 
 *ME3Logger was adapted from original code by [Heff](https://github.com/HeffU): http://me3explorer.freeforums.org/me3logger-t1932.html*
-
-*ME3 Balance Changes Replacer uses zlib 1.2.11. zlib is Copyright (C) 1995-2010 Jean-loup Gailly and Mark Adler. http://www.zlib.net*
 
 These plugins are not made or supported by EA or BioWare.<br />
 Mass Effect is a trademark of EA International (Studio and Publishing) Ltd.
