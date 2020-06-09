@@ -1,6 +1,14 @@
 #include "header.h"
 #include <windows.h>
 #include <stdio.h>
+#include "resource.h"
+
+struct LogWindowStruct {
+	HWND hWindow;
+	HWND hRichEdit;
+} logWindow;
+
+HINSTANCE hDLL;
 
 #define LOC_START 0x452B01
 #define LOC_EXIT 0x452B09
@@ -14,6 +22,15 @@ struct MsgStruct
 	wchar_t * str;
 	int size;
 } *message;
+
+void LogAppendText(LPCWSTR text)
+{
+	int currentlen = GetWindowTextLength(logWindow.hRichEdit);
+	SendMessage(logWindow.hRichEdit, EM_SETSEL, (WPARAM)currentlen, (LPARAM)currentlen);
+	SendMessage(logWindow.hRichEdit, EM_REPLACESEL, 0, (LPARAM)text);
+	SendMessage(logWindow.hRichEdit, EM_REPLACESEL, 0, (LPARAM)L"\n");
+	SendMessage(logWindow.hRichEdit, WM_VSCROLL, SB_BOTTOM, 0);
+}
 
 bool GetLocation(int * p)
 {
@@ -38,6 +55,7 @@ __declspec(naked) void ExposeMessageFunc()
 		//printf("pointer: %p ; var1: %p\n", pointer, (void*)var1);
 		message = (MsgStruct*)stringHeader;
 		printf("%ls\n", message->str);
+		LogAppendText(message->str);
 	}
 
 
@@ -51,7 +69,48 @@ __declspec(naked) void ExposeMessageFunc()
 	}
 }
 
-void PatchGameMemory()
+BOOL CALLBACK LogWindowProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam)
+{
+	switch (Message)
+	{
+	case WM_INITDIALOG:
+		return TRUE;
+	//case WM_COMMAND:
+	//	switch (LOWORD(wParam))
+	//	{
+	//	case IDOK:
+	//		EndDialog(hwnd, IDOK);
+	//		break;
+	//	case IDCANCEL:
+	//		EndDialog(hwnd, IDCANCEL);
+	//		break;
+	//	}
+	//	break;
+	default:
+		return FALSE;
+	}
+	return TRUE;
+}
+
+DWORD WINAPI LogWindowThread(LPVOID lpParam)
+{
+	LoadLibrary(L"riched20.dll");
+	MSG msg;
+	logWindow.hWindow = CreateDialog(hDLL, MAKEINTRESOURCE(IDD_DIALOG1), 0, LogWindowProc);
+	logWindow.hRichEdit = GetDlgItem(logWindow.hWindow, IDC_RICHEDIT21);
+	ShowWindow(logWindow.hWindow, SW_NORMAL);
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		if (!IsDialogMessage(logWindow.hWindow, &msg))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+	}
+	return 1;
+}
+
+DWORD WINAPI Start(LPVOID lpParam)
 {
 	unsigned long hold = NULL;
 
@@ -67,13 +126,20 @@ void PatchGameMemory()
 	AttachConsole(GetCurrentProcessId());
 	freopen ( "CON", "w", stdout ) ;
 	printf("ME3 ClientMessage Exposer by Erik JS\n------------------------------------\n");
+
+	CreateThread(0, NULL, LogWindowThread, (LPVOID)L"Log Window Test", NULL, NULL);
+
+	return 0;
 }
 
-bool __stdcall DllMain(HANDLE process, DWORD reason, LPVOID lpReserved){
-	if(reason == DLL_PROCESS_ATTACH){
-		PatchGameMemory();
-		return 1;
+BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
+{
+	hDLL = hinstDLL;
+	if (fdwReason == DLL_PROCESS_ATTACH)
+	{
+		DWORD dwThreadId, dwThrdParam = 1;
+		HANDLE hThread;
+		hThread = CreateThread(NULL, 0, Start, &dwThrdParam, 0, &dwThreadId);
 	}
-	else
-		return 0;
+	return 1;
 }
