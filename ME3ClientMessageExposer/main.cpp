@@ -1,7 +1,8 @@
 #include "header.h"
 #include <windows.h>
-#include <stdio.h>
 #include "resource.h"
+#include <Richedit.h>
+#include <string.h>
 
 struct LogWindowStruct {
 	HWND hWindow;
@@ -54,7 +55,6 @@ __declspec(naked) void ExposeMessageFunc()
 	{
 		//printf("pointer: %p ; var1: %p\n", pointer, (void*)var1);
 		message = (MsgStruct*)stringHeader;
-		printf("%ls\n", message->str);
 		LogAppendText(message->str);
 	}
 
@@ -98,6 +98,12 @@ DWORD WINAPI LogWindowThread(LPVOID lpParam)
 	MSG msg;
 	logWindow.hWindow = CreateDialog(hDLL, MAKEINTRESOURCE(IDD_DIALOG1), 0, LogWindowProc);
 	logWindow.hRichEdit = GetDlgItem(logWindow.hWindow, IDC_RICHEDIT21);
+	CHARFORMAT cf;
+	cf.cbSize = sizeof(CHARFORMAT);
+	cf.dwMask = CFM_FACE | CFM_SIZE;
+	cf.yHeight = 200;
+	wcscpy_s(cf.szFaceName, sizeof(cf.szFaceName) / sizeof(WCHAR), L"Consolas");
+	SendMessage(logWindow.hRichEdit, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&cf);
 	ShowWindow(logWindow.hWindow, SW_NORMAL);
 	while (GetMessage(&msg, NULL, 0, 0))
 	{
@@ -112,7 +118,7 @@ DWORD WINAPI LogWindowThread(LPVOID lpParam)
 
 DWORD WINAPI Start(LPVOID lpParam)
 {
-	unsigned long hold = NULL;
+	DWORD hold = NULL;
 
 	VirtualProtect((void*)LOC_START, 8, PAGE_EXECUTE_READWRITE, &hold);
 	*(BYTE*)(LOC_START) = 0xE9;
@@ -122,12 +128,7 @@ DWORD WINAPI Start(LPVOID lpParam)
 	*(BYTE*)(LOC_START+7) = 0x90;
 	VirtualProtect((void*)LOC_START, 8, hold, NULL);
 
-	AllocConsole();
-	AttachConsole(GetCurrentProcessId());
-	freopen ( "CON", "w", stdout ) ;
-	printf("ME3 ClientMessage Exposer by Erik JS\n------------------------------------\n");
-
-	CreateThread(0, NULL, LogWindowThread, (LPVOID)L"Log Window Test", NULL, NULL);
+	CreateThread(0, NULL, LogWindowThread, NULL, NULL, NULL);
 
 	return 0;
 }
